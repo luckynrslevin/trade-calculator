@@ -1,6 +1,6 @@
 # trade-calculator
 
-A simple calculator for trading. Calculating your position size for a trade in units base on defined portfolio value, risk, price and stop loss.
+A simple calculator to determin the position size of a stock trade. Calculating your position size for a trade in units base on defined portfolio value, risk, price and stop loss.
 
 Your personal money is a sensitive and private thing. The calculator is implemented as a single html page with pure javascript, without use of any external 3rd party libraries. Therefore the page itself is not collecting any data.
 
