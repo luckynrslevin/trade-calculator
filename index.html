@@ -123,7 +123,7 @@
   </head>
   <body>
     <div class="container">
-      <!-- Form Section with centered title inside the layout -->
+      <!-- Input form Section -->
       <form id="calculation-form">
         <!-- Title inside the input box -->
         <div class="form-title">Trade Calculator</div>
@@ -161,6 +161,29 @@
     </div>
 
     <script>
+      // Function to get URL parameters
+      function getURLParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+      }
+      
+      // Inject values into the form fields based on the URL parameters
+      window.onload = function() {
+        const priceParam = getURLParam('price');
+        const stopParam = getURLParam('stop');
+        const riskParam = getURLParam('risk');
+            
+        if (priceParam) {
+          document.getElementById('price').value = priceParam;
+        }
+        if (stopParam) {
+          document.getElementById('stop').value = stopParam;
+        }
+        if (riskParam) {
+          document.getElementById('risk').value = riskParam;
+        }
+      }
+      
       // Function for Calculation
       function calculate() {
         // Reset error message and result
