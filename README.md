@@ -11,7 +11,7 @@ The stock price is 3,50 €
 The defined stop loss is 2,20 €  
 => You would need to buy 231 units and the overall cost will be 807,69 €  
 
-![example screenshot](https://github.com/luckynrslevin/trade-calculator/blob/main/screenshot-example.jpg?raw=true)
+<img src="https://github.com/luckynrslevin/trade-calculator/blob/main/screenshot-example.jpg?raw=true" alt="drawing" width="300"/>
 
 
 ## How to use
