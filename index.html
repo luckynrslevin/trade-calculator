@@ -86,8 +86,8 @@
       }
 
       /* Results */
-      #ergebnis,
-      #gesamt-kosten {
+      #results,
+      #sum {
         text-align: center;
         font-size: 1.2rem;
         color: #333;
@@ -97,11 +97,11 @@
         white-space: normal; /* Prevents text from overflowing */
       }
 
-      #ergebnis {
+      #results {
         color: #4caf50;
       }
 
-      #gesamt-kosten {
+      #sum {
         color: #555;
         font-weight: normal;
       }
@@ -128,25 +128,25 @@
         <!-- Title inside the input box -->
         <div class="form-title">Trade Calculator</div>
 
-        <label for="depotvolumen">Portfolio value (€):</label>
+        <label for="portfoliovalue">Portfolio value (€):</label>
         <input
           type="number"
-          id="depotvolumen"
+          id="portfoliovalue"
           value="30000"
           required
           min="0.01"
           step="0.01"
         />
 
-        <label for="depotrisiko">Portfolio risk (%):</label>
-        <select id="depotrisiko" required>
+        <label for="risk">Portfolio risk (%):</label>
+        <select id="risk" required>
           <option value="0.005">0,5%</option>
           <option value="0.01" selected>1,0%</option>
           <option value="0.02">2,0%</option>
         </select>
 
-        <label for="kurs">Price (€):</label>
-        <input type="number" id="kurs" required min="0.01" step="0.01" />
+        <label for="price">Price (€):</label>
+        <input type="number" id="price" required min="0.01" step="0.01" />
 
         <label for="stop">Stop (€):</label>
         <input type="number" id="stop" required min="0.01" step="0.01" />
@@ -154,8 +154,8 @@
 
       <!-- Result Box to display results -->
       <div class="result-box">
-        <h2 id="ergebnis">Waiting for Calculation...</h2>
-        <p id="gesamt-kosten"></p>
+        <h2 id="result">Waiting for Calculation...</h2>
+        <p id="total-cost"></p>
         <p id="error-message" class="error"></p>
       </div>
     </div>
@@ -188,18 +188,18 @@
       function calculate() {
         // Reset error message and result
         document.getElementById("error-message").innerText = "";
-        document.getElementById("ergebnis").innerText =
+        document.getElementById("result").innerText =
           "Waiting for Calculation...";
-        document.getElementById("gesamt-kosten").innerText = "";
+        document.getElementById("total-cost").innerText = "";
 
         // Get values from input fields
         const portfolioValue = parseFloat(
-          document.getElementById("depotvolumen").value
+          document.getElementById("portfoliovalue").value
         );
         const portfolioRiskPercentage = parseFloat(
-          document.getElementById("depotrisiko").value
+          document.getElementById("risk").value
         );
-        const price = parseFloat(document.getElementById("kurs").value);
+        const price = parseFloat(document.getElementById("price").value);
         const stop = parseFloat(document.getElementById("stop").value);
 
         // Calculate risk
@@ -249,25 +249,25 @@
 
           // Display results
           document.getElementById(
-            "ergebnis"
+            "result"
           ).innerText = `The amount is: ${amountFormatted} units`;
           document.getElementById(
-            "gesamt-kosten"
+            "total-cost"
           ).innerText = `Total cost: ${totalCostFormatted} €`;
         } else {
-          document.getElementById("ergebnis").innerText =
+          document.getElementById("result").innerText =
             "The price must be greater than the stop!";
         }
       }
 
       // Event Listener for all input fields
       document
-        .getElementById("depotvolumen")
+        .getElementById("portfoliovalue")
         .addEventListener("input", calculate);
       document
-        .getElementById("depotrisiko")
+        .getElementById("risk")
         .addEventListener("change", calculate);
-      document.getElementById("kurs").addEventListener("input", calculate);
+      document.getElementById("price").addEventListener("input", calculate);
       document.getElementById("stop").addEventListener("input", calculate);
     </script>
   </body>
