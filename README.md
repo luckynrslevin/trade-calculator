@@ -24,11 +24,11 @@ The defined stop loss is 2,20 €
 As mentioned before the page itself does not collect any data. However, like with any other webpage you access in the internet, you will leave a footprint at the hoster of the page (in this case github).   
 Using this method, default portfolio value is set to 30000 and portfolio risk is set to 1% and you need to manually change it to your needs.  
 
-You can pass values for parameters price, stop loss and risk in the URL, e.g. if you want to pass the values of the above example you can do it like this:  
-⚠️ You need to use english number format in the URL parameters. Instead of a comma "," you need to use a dot "." as separator.  
+You can pass values for parameters price, stop loss and risk in the URL, e.g. if you want to pass the values of the above example you can do it like this:   
 ```
 https://luckynrslevin.github.io/trade-calculator/index.html?price=3.5&stop=2.2&risk=0.01
 ```
+⚠️ You need to use english number format in the URL parameters. Instead of a comma "," you need to use a dot "." as separator. 
 
 ### Download as local file on your computer
 For even more privacy and possibility to customize the default portfolio value, you can <a id="raw-url" href="https://raw.githubusercontent.com/luckynrslevin/trade-calculator/main/index.html">download the trade calculator html file</a> and  store it on your laptop to open it directly from there with your browser.  
@@ -39,12 +39,13 @@ If you have a webserver you obviously just can deploy the html file.
 
 ## How can I change the default portfolio value settings
 You will need to download the file and change the content of the html file in a text editor of your choice.  
-Change the default value of 30000 value here, save and reload the file in your browser:
+Change the default value of 30000 value (see below), save and reload the file in your browser:
 ```
 ....
+        <label for="portfoliovalue">Portfolio value (€):</label>
         <input
           type="number"
-          id="depotvolumen"
+          id="portfoliovalue"
           value="30000"
           required
           min="0.01"
