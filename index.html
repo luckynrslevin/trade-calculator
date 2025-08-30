@@ -132,7 +132,7 @@
         <input
           type="number"
           id="portfoliovalue"
-          value="30000"
+          value="0"
           required
           min="0.01"
           step="0.01"
@@ -219,9 +219,15 @@
           return;
         }
 
-        if (portfolioValue <= 0 || price <= 0 || stop <= 0) {
+        if (portfolioValue <= 0) {
           document.getElementById("error-message").innerText =
-            "Error: All values must be greater than 0!";
+            "Error: Please enter the overall value of your trading portfolio!";
+          return;
+        }
+
+        if (portfolioValue > 0 && (price <= 0 || stop <= 0)) {
+          document.getElementById("error-message").innerText =
+            "Error: Please enter positive number for price and stop!";
           return;
         }
 
