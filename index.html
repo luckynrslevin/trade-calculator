@@ -186,6 +186,13 @@
          // Call the calculation function after setting parameters
         calculate();
       }
+
+      // Prevent form submission when hitting Enter
+      document
+        .getElementById("calculation-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent form submission
+        });
       
       // Function for Calculation
       function calculate() {
