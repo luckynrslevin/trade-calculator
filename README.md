@@ -38,19 +38,18 @@ However, this method will only work on your laptop and maybe not on a smart phon
 ### 2.3. Deploy on your webserver
 If you have a webserver you obviously just can deploy the html file to your server.
 
-## 3. How can I change the default portfolio value settings
-You will need to download the file and change the content of the html file in a text editor of your choice.  
-Change the default value of 0 value (see line value="0" below), save and reload the file in your browser:
-```
-....
-        <label for="portfoliovalue">Portfolio value (€):</label>
-        <input
-          type="number"
-          id="portfoliovalue"
-          value="0"
-          required
-          min="0.01"
-          step="0.01"
-        />
-...
-```
+## 3. How to develop and test
+
+### 3.1. Development
+Not a lot to say, use editor of your choice ;-)
+
+### 3.2. Testing
+I am using WebdriverIO framework to to end to end tests via the WebBrowser UI.
+
+You need to clone the repository.
+Install necessary tools and dependencies. (TODO: Elaborate on installation procedure)
+
+To execute the tests run the following command in the root directory of the project:
+````
+npx wdio run wdio.conf.js
+````
