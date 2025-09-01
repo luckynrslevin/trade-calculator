@@ -131,7 +131,7 @@
         cursor: pointer;
         transition: background-color 0.3s ease;
       }
-      
+
       #reset-button:hover {
         background-color: #d32f2f;
       }
@@ -145,14 +145,7 @@
         <div class="form-title">Trade Calculator</div>
 
         <label for="portfoliovalue">Portfolio value (€):</label>
-        <input
-          type="number"
-          id="portfoliovalue"
-          value="0"
-          required
-          min="0.01"
-          step="0.01"
-        />
+        <input type="text" id="portfoliovalue" value="" required />
 
         <label for="risk">Portfolio risk (%):</label>
         <select id="risk" required>
@@ -162,11 +155,11 @@
         </select>
 
         <label for="price">Price (€):</label>
-        <input type="number" id="price" required min="0.01" step="0.01" />
+        <input type="text" id="price" required />
 
         <label for="stop">Stop (€):</label>
-        <input type="number" id="stop" required min="0.01" step="0.01" />
-        
+        <input type="text" id="stop" required />
+
         <button type="button" id="reset-button">Reset input form</button>
       </form>
 
@@ -185,25 +178,25 @@
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(name);
       }
-      
+
       // Inject values into the form fields based on the URL parameters
-      window.onload = function() {
-        const priceParam = getURLParam('price');
-        const stopParam = getURLParam('stop');
-        const riskParam = getURLParam('risk');
-            
+      window.onload = function () {
+        const priceParam = getURLParam("price");
+        const stopParam = getURLParam("stop");
+        const riskParam = getURLParam("risk");
+
         if (priceParam) {
-          document.getElementById('price').value = priceParam;
+          document.getElementById("price").value = priceParam;
         }
         if (stopParam) {
-          document.getElementById('stop').value = stopParam;
+          document.getElementById("stop").value = stopParam;
         }
         if (riskParam) {
-          document.getElementById('risk').value = riskParam;
+          document.getElementById("risk").value = riskParam;
         }
-         // Call the calculation function after setting parameters
+        // Call the calculation function after setting parameters
         calculate();
-      }
+      };
 
       // Prevent form submission when hitting Enter
       document
@@ -212,20 +205,99 @@
           event.preventDefault(); // Prevent form submission
         });
 
-      document.getElementById("reset-button").addEventListener("click", function() {
-        // Clear all inputs
-        document.getElementById("portfoliovalue").value = "0";
-        document.getElementById("risk").value = "0.01"; // Default to 1% risk
-        document.getElementById("price").value = "";
-        document.getElementById("stop").value = "";
-        
-        // Reset the result section
-        document.getElementById("result").innerText = "Waiting for Calculation...";
-        document.getElementById("total-cost").innerText = "";
-        document.getElementById("risk-amount").innerText = "";
-        document.getElementById("error-message").innerText = "";
-      });
-      
+      // Reset input form
+      document
+        .getElementById("reset-button")
+        .addEventListener("click", function () {
+          // Clear all inputs
+          document.getElementById("portfoliovalue").value = "";
+          document.getElementById("risk").value = "0.01"; // Default to 1% risk
+          document.getElementById("price").value = "";
+          document.getElementById("stop").value = "";
+
+          // Reset the result section
+          document.getElementById("result").innerText =
+            "Waiting for Calculation...";
+          document.getElementById("total-cost").innerText = "";
+          document.getElementById("risk-amount").innerText = "";
+          document.getElementById("error-message").innerText = "";
+        });
+
+      function parseEuro(value) {
+        return parseFloat(value.replace(/\./g, "").replace(",", "."));
+      }
+
+      function formatInput(event) {
+        const input = event.target;
+        const originalValue = input.value;
+        const originalCursor = input.selectionStart;
+
+        console.log("Original Input:", originalValue);
+
+        // === STEP 1: Extract digits and comma only ===
+        let cleanedValue = originalValue.replace(/[^\d,]/g, "");
+        console.log("Cleaned input:", cleanedValue);
+
+        // === STEP 2: Detect if comma was typed at the current cursor position ===
+        const justTypedComma =
+          originalValue[originalCursor - 1] === "," &&
+          (originalCursor === originalValue.length ||
+            /\d/.test(originalValue[originalCursor]));
+
+        // === STEP 3: Remove leading zeros (before comma only) ===
+        let [intPart, decPart] = cleanedValue.split(",");
+        intPart = intPart.replace(/^0+/, "") || "";
+
+        // === STEP 4: Limit decimal digits ===
+        if (decPart) {
+          decPart = decPart.substring(0, 2);
+        }
+
+        // === STEP 5: Count digits before cursor ===
+        const digitsBeforeCursor = originalValue
+          .substring(0, originalCursor)
+          .replace(/[^\d]/g, "").length;
+
+        // === STEP 6: Format integer part with dots ===
+        let formattedInt = "";
+        for (let i = intPart.length - 1, count = 1; i >= 0; i--, count++) {
+          formattedInt = intPart[i] + formattedInt;
+          if (count % 3 === 0 && i !== 0) {
+            formattedInt = "." + formattedInt;
+          }
+        }
+
+        // === STEP 7: Combine parts into final value ===
+        const formattedValue =
+          decPart !== undefined ? `${formattedInt},${decPart}` : formattedInt;
+        input.value = formattedValue;
+
+        // === STEP 8: Restore cursor position ===
+        let newCursor = 0;
+        let digitCount = 0;
+        for (let i = 0; i < formattedValue.length; i++) {
+          if (/\d/.test(formattedValue[i])) {
+            digitCount++;
+          }
+          if (digitCount >= digitsBeforeCursor) {
+            newCursor = i + 1;
+            break;
+          }
+        }
+
+        // Default to end if all digits are counted
+        if (digitCount < digitsBeforeCursor) {
+          newCursor = formattedValue.length;
+        }
+
+        // === STEP 9: Special handling if user just typed a comma ===
+        if (justTypedComma && !formattedValue.includes(",,")) {
+          newCursor = formattedValue.indexOf(",") + 1;
+        }
+
+        input.setSelectionRange(newCursor, newCursor);
+      }
+
       // Function for Calculation
       function calculate() {
         // Reset error message and result
@@ -236,14 +308,14 @@
         document.getElementById("risk-amount").innerText = "";
 
         // Get values from input fields
-        const portfolioValue = parseFloat(
+        const portfolioValue = parseEuro(
           document.getElementById("portfoliovalue").value
         );
+        const price = parseEuro(document.getElementById("price").value);
+        const stop = parseEuro(document.getElementById("stop").value);
         const portfolioRiskPercentage = parseFloat(
           document.getElementById("risk").value
         );
-        const price = parseFloat(document.getElementById("price").value);
-        const stop = parseFloat(document.getElementById("stop").value);
 
         // Calculate risk
         const risk = portfolioValue * portfolioRiskPercentage;
@@ -307,24 +379,42 @@
           document.getElementById(
             "total-cost"
           ).innerText = `Total cost: ${totalCostFormatted} €`;
-           document.getElementById(
-             "risk-amount"
-           ).innerText = `Risk amount: ${riskFormatted} €`;
+          document.getElementById(
+            "risk-amount"
+          ).innerText = `Risk amount: ${riskFormatted} €`;
         } else {
           document.getElementById("result").innerText =
             "The price must be greater than the stop!";
         }
       }
 
-      // Event Listener for all input fields
+      // Attach event listeners to portfolio value, price, and stop fields
       document
         .getElementById("portfoliovalue")
-        .addEventListener("input", calculate);
+        .addEventListener("input", function (event) {
+          formatInput(event); // Format the input
+          calculate(); // Perform calculation
+        });
+
+      document
+        .getElementById("price")
+        .addEventListener("input", function (event) {
+          formatInput(event); // Format the input
+          calculate(); // Perform calculation
+        });
+
+      document
+        .getElementById("stop")
+        .addEventListener("input", function (event) {
+          formatInput(event); // Format the input
+          calculate(); // Perform calculation
+        });
+      
       document
         .getElementById("risk")
-        .addEventListener("change", calculate);
-      document.getElementById("price").addEventListener("input", calculate);
-      document.getElementById("stop").addEventListener("input", calculate);
+        .addEventListener("change", function () {
+          calculate();
+        });
     </script>
   </body>
 </html>
