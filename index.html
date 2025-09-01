@@ -246,7 +246,7 @@
 
         // === STEP 3: Remove leading zeros (before comma only) ===
         let [intPart, decPart] = cleanedValue.split(",");
-        intPart = intPart.replace(/^0+/, "") || "0";
+        intPart = intPart.replace(/^0+/, "") || "";
 
         // === STEP 4: Limit decimal digits ===
         if (decPart) {
@@ -408,6 +408,12 @@
         .addEventListener("input", function (event) {
           formatInput(event); // Format the input
           calculate(); // Perform calculation
+        });
+      
+      document
+        .getElementById("risk")
+        .addEventListener("change", function () {
+          calculate();
         });
     </script>
   </body>
