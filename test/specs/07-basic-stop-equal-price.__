@@ -1,0 +1,24 @@
+const TradeCalculatorPage = require('../pageobjects/tradeCalculator.page');
+
+describe('07-basic-stop-equal-price', () => {
+  beforeEach(async () => {
+    await TradeCalculatorPage.open();
+    await TradeCalculatorPage.reset(); // Clear previous inputs
+  });
+
+  it('should correctly display error when stop is greater than price', async () => {
+    await TradeCalculatorPage.setPortfolioValue('30000');
+    await TradeCalculatorPage.setRisk('0.01');
+    await TradeCalculatorPage.setPrice('3,5');
+    await TradeCalculatorPage.setStop('3,51');
+
+    // Wait a short time to allow UI to update
+    await browser.pause(500);
+
+    // Capture UI values
+    const errorMessage = await TradeCalculatorPage.errorMessage.getText();
+
+    // Error text assertion
+    expect(errorMessage).toContain('Price and stop cannot be the same!');
+  });
+});
