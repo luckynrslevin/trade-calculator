@@ -315,12 +315,16 @@
 
       // Inject values into the form fields based on the URL parameters
       window.onload = function () {
+        const portfoliovalueParam = getURLParam("portfoliovalue");
         const priceParam = getURLParam("price");
         const stopParam = getURLParam("stop");
         const riskParam = getURLParam("risk");
 
         // If URL parameters are provided, they take precedence
-        if (priceParam || stopParam || riskParam) {
+        if (portfoliovalueParam || priceParam || stopParam || riskParam) {
+          if (portfoliovalueParam) {
+            document.getElementById("portfoliovalue").value = portfoliovalueParam;
+          }
           if (priceParam) {
             document.getElementById("price").value = priceParam;
           }
