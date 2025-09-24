@@ -24,10 +24,18 @@ The defined stop loss is 2,20 €
 As mentioned before the page itself does not collect any data. However, like with any other webpage you access in the internet, you will leave a footprint at the hoster of the page (in this case github).   
 Using this method, default portfolio value is set to 0 and portfolio risk is set to 1%. You can either manually change these values in the UI or pass them as URL parameters.  
 
-You can pass values for parameters portfolio value, price, stop loss and risk in the URL, e.g. if you want to pass the values of the above example you can do it like this:   
+You can pass values for parameters portfolio value, price, stop loss and risk in the URL, e.g. if you want to pass the values of the above example you can do it like this:  
+
+To leave the submission of the portfolio value to the user receiving the link:
 ```
-https://luckynrslevin.github.io/trade-calculator/index.html?portfoliovalue=30000&price=3.5&stop=2.2&risk=0.01
+https://luckynrslevin.github.io/trade-calculator/index.html?price=3.5&stop=2.2&risk=0.01
 ```
+
+To create an URL with your presonal portfolio value, e.g. you can add to your iPhone homescreen:
+```
+https://luckynrslevin.github.io/trade-calculator/index.html?portfoliovalue=30000
+```
+
 ⚠️ You need to use english number format in the URL parameters. Instead of a comma "," you need to use a dot "." as separator.
 
 ### 2.2. Download as local file on your computer
