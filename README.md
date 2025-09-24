@@ -22,14 +22,13 @@ The defined stop loss is 2,20 €
 
 [You can simply open this link on github pages](https://luckynrslevin.github.io/trade-calculator/index.html)  
 As mentioned before the page itself does not collect any data. However, like with any other webpage you access in the internet, you will leave a footprint at the hoster of the page (in this case github).   
-Using this method, default portfolio value is set to 0 and portfolio risk is set to 1% and you need to manually change it to your needs.  
+Using this method, default portfolio value is set to 0 and portfolio risk is set to 1%. You can either manually change these values in the UI or pass them as URL parameters.  
 
-You can pass values for parameters price, stop loss and risk in the URL, e.g. if you want to pass the values of the above example you can do it like this:   
+You can pass values for parameters portfolio value, price, stop loss and risk in the URL, e.g. if you want to pass the values of the above example you can do it like this:   
 ```
-https://luckynrslevin.github.io/trade-calculator/index.html?price=3.5&stop=2.2&risk=0.01
+https://luckynrslevin.github.io/trade-calculator/index.html?portfoliovalue=30000&price=3.5&stop=2.2&risk=0.01
 ```
-⚠️ You need to use english number format in the URL parameters. Instead of a comma "," you need to use a dot "." as separator. 
-And afterwards update the default portfolio value of 0 to 30000 in the UI.
+⚠️ You need to use english number format in the URL parameters. Instead of a comma "," you need to use a dot "." as separator.
 
 ### 2.2. Download as local file on your computer
 For even more privacy and possibility to customize the default portfolio value, you can <a id="raw-url" href="https://raw.githubusercontent.com/luckynrslevin/trade-calculator/main/index.html">download the trade calculator html file</a> and  store it on your laptop to open it directly from there with your browser.  
