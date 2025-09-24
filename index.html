@@ -2,7 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <meta name="description" content="A simple calculator to determine the position size of a stock trade. Calculate your position size in units based on defined portfolio value, risk, stock price and stop loss." />
+    <meta name="theme-color" content="#4caf50" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Trade Calculator" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjNGNhZjUwIi8+Cjx0ZXh0IHg9Ijk2IiB5PSI5NiIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQ4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIwLjNlbSI+VEM8L3RleHQ+Cjwvc3ZnPg==" />
     <title>Trade Calculator</title>
 
     <style>
@@ -135,6 +141,98 @@
       #reset-button:hover {
         background-color: #d32f2f;
       }
+
+      /* Mobile Responsive Styles */
+      @media screen and (max-width: 768px) {
+        body {
+          padding: 20px 10px;
+          height: auto;
+          min-height: 100vh;
+        }
+
+        .container {
+          padding: 10px;
+        }
+
+        form {
+          width: 100%;
+          max-width: none;
+          margin: 0;
+          padding: 20px;
+        }
+
+        .result-box {
+          width: 100%;
+          max-width: none;
+          margin-top: 20px;
+          padding: 20px;
+        }
+
+        .form-title {
+          font-size: 1.5rem;
+          margin-bottom: 20px;
+        }
+
+        input,
+        select {
+          padding: 15px;
+          font-size: 1.1rem;
+          margin-bottom: 15px;
+        }
+
+        label {
+          font-size: 1rem;
+          margin-bottom: 8px;
+        }
+
+        #reset-button {
+          padding: 15px;
+          font-size: 1.1rem;
+          margin-top: 10px;
+        }
+
+        #result {
+          font-size: 1.1rem;
+        }
+
+        #total-cost,
+        #risk-amount {
+          font-size: 1rem;
+        }
+
+        .error {
+          font-size: 0.9rem;
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        body {
+          padding: 15px 5px;
+        }
+
+        form {
+          padding: 15px;
+        }
+
+        .result-box {
+          padding: 15px;
+        }
+
+        .form-title {
+          font-size: 1.3rem;
+        }
+
+        input,
+        select {
+          padding: 12px;
+          font-size: 1rem;
+        }
+
+        #reset-button {
+          padding: 12px;
+          font-size: 1rem;
+        }
+      }
     </style>
   </head>
   <body>
@@ -179,23 +277,76 @@
         return urlParams.get(name);
       }
 
+      // State persistence functions for iOS background handling
+      function saveFormState() {
+        const state = {
+          portfoliovalue: document.getElementById("portfoliovalue").value,
+          risk: document.getElementById("risk").value,
+          price: document.getElementById("price").value,
+          stop: document.getElementById("stop").value,
+          timestamp: Date.now()
+        };
+        localStorage.setItem('tradeCalculatorState', JSON.stringify(state));
+      }
+
+      function restoreFormState() {
+        try {
+          const savedState = localStorage.getItem('tradeCalculatorState');
+          if (savedState) {
+            const state = JSON.parse(savedState);
+            // Only restore if saved within last 24 hours
+            if (Date.now() - state.timestamp < 24 * 60 * 60 * 1000) {
+              document.getElementById("portfoliovalue").value = state.portfoliovalue || "";
+              document.getElementById("risk").value = state.risk || "0.01";
+              document.getElementById("price").value = state.price || "";
+              document.getElementById("stop").value = state.stop || "";
+              return true;
+            }
+          }
+        } catch (e) {
+          console.log("Could not restore form state:", e);
+        }
+        return false;
+      }
+
+      function clearFormState() {
+        localStorage.removeItem('tradeCalculatorState');
+      }
+
       // Inject values into the form fields based on the URL parameters
       window.onload = function () {
         const priceParam = getURLParam("price");
         const stopParam = getURLParam("stop");
         const riskParam = getURLParam("risk");
 
-        if (priceParam) {
-          document.getElementById("price").value = priceParam;
+        // If URL parameters are provided, they take precedence
+        if (priceParam || stopParam || riskParam) {
+          if (priceParam) {
+            document.getElementById("price").value = priceParam;
+          }
+          if (stopParam) {
+            document.getElementById("stop").value = stopParam;
+          }
+          if (riskParam) {
+            document.getElementById("risk").value = riskParam;
+          }
+        } else {
+          // Otherwise try to restore from localStorage
+          restoreFormState();
         }
-        if (stopParam) {
-          document.getElementById("stop").value = stopParam;
-        }
-        if (riskParam) {
-          document.getElementById("risk").value = riskParam;
-        }
+        
         // Call the calculation function after setting parameters
         calculate();
+
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            }).catch(function(err) {
+              console.log('ServiceWorker registration failed: ', err);
+            });
+        }
       };
 
       // Prevent form submission when hitting Enter
@@ -221,6 +372,9 @@
           document.getElementById("total-cost").innerText = "";
           document.getElementById("risk-amount").innerText = "";
           document.getElementById("error-message").innerText = "";
+
+          // Clear saved state
+          clearFormState();
         });
 
       function parseEuro(value) {
@@ -394,6 +548,7 @@
         .addEventListener("input", function (event) {
           formatInput(event); // Format the input
           calculate(); // Perform calculation
+          saveFormState(); // Save state for iOS background handling
         });
 
       document
@@ -401,6 +556,7 @@
         .addEventListener("input", function (event) {
           formatInput(event); // Format the input
           calculate(); // Perform calculation
+          saveFormState(); // Save state for iOS background handling
         });
 
       document
@@ -408,13 +564,24 @@
         .addEventListener("input", function (event) {
           formatInput(event); // Format the input
           calculate(); // Perform calculation
+          saveFormState(); // Save state for iOS background handling
         });
       
       document
         .getElementById("risk")
         .addEventListener("change", function () {
           calculate();
+          saveFormState(); // Save state for iOS background handling
         });
+
+      // Additional event listeners for mobile/iOS state preservation
+      window.addEventListener("beforeunload", saveFormState);
+      window.addEventListener("pagehide", saveFormState);
+      window.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === "hidden") {
+          saveFormState();
+        }
+      });
     </script>
   </body>
 </html>
